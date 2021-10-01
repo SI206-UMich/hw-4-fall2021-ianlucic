@@ -104,12 +104,13 @@ class Stall:
         if food_name in self.inventory.keys():
             self.inventory[food_name] = self.inventory[food_name] + quantity
         else: 
-            self.inventory[food_name] + quantity #Changed from = to +
+            self.inventory[food_name] = quantity #Changed from = to +
 
     def compute_cost(self, quantity):
         return quantity * self.cost
 
     def __str__(self):
+        menu_key = self.inventory,keys()
         return ("Hello, we are " + self.name + ". This is the current menu " + str(self.inventory.keys()) + ". We charge $" + str(self.cost) + " per item. We have $" + str(self.earnings) + "in total.")
 
 
@@ -219,34 +220,44 @@ class TestAllMethods(unittest.TestCase):
         self.f3.validate_order(self.c1, self.s1, "Burger", 1)
         self.assertEqual(self.f3.wallet, 4)
 
-        pass
 
     # Test if a customer can add money to their wallet
     def test_reload_money(self):
         wallet = self.f1.wallet
         self.f1.reload_money(20)
         self.assertEqual(wallet + 20, self.f1.wallet)
-        pass
     
 ### Write main function
 def main():
     inventory_american = { "Burger": 35, "Mac and Cheese": 10, "Tomato Soup": 25}
     inventory_british = {"Jammy Dodger": 50, "Tea": 15, "Scones": 10}
     
-    f1 = Customer("Mary", 350)
+    f1 = Customer("Mary", 30)
     f2 = Customer("Bob", 60)
     f3 = Customer("Jane", 10)
     
     s1 = Stall("Terry's Turf Club", inventory_american, cost = 5)
     s2 = Stall("Queen Elizabeth's Bakery", inventory_british, cost = 8)
 
-    c1 = Cashier("South", [s1, s2])
-    c2 = Cashier("North", [s1, s2])
+    c1 = Cashier("South", [s1])
+    c2 = Cashier("North", [s2])
 
-    
+    f1.validate_order(c1, s2, "Tea", 15)
+    f2.validate_order(c2, s1, "Burger", 40)
+    f3.validate_order(c1, s2, "Scones", 5)
 
+    f1.validate_order(c1, s1,"Burger", 40)
+    f2.validate_order(c1, s1,"Tomato Soup", 30)
+    f3.validate_order(c2, s2,"Tea", 20)
 
-    pass
+    f1.validate_order(c1, s1, "Burger", 10)
+    f2.validate_order(c2, s2, "Scones", 10)
+    f3.validate_order(c2, s2, "Jammy Dodger", 2)
+
+    f1.validate_order(c1, s1, "Burger", 2)
+    f2.validate_order(c1, s1, "Mac and Cheese", 2)
+    f3.validate_order(c2, s2, "Scones", 1)
+
 
 if __name__ == "__main__":
 	main()
